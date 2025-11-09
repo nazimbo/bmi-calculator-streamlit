@@ -1,6 +1,66 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import logging
+from logging.handlers import RotatingFileHandler
+import sys
+
+# Configure logging
+log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logging.basicConfig(
+    level=logging.INFO,
+    format=log_format,
+    handlers=[
+        RotatingFileHandler('bmi_calculator.log', maxBytes=10485760, backupCount=5),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
+
+
+# Core BMI calculation functions (extracted for testability)
+def calculate_bmi(height_cm: float, weight_kg: float) -> float:
+    """Calculate BMI from height and weight.
+
+    Args:
+        height_cm: Height in centimeters
+        weight_kg: Weight in kilograms
+
+    Returns:
+        Calculated BMI value
+
+    Raises:
+        ValueError: If height or weight are invalid
+    """
+    if height_cm <= 0 or weight_kg <= 0:
+        raise ValueError("Height and weight must be positive values")
+    if height_cm > 300 or weight_kg > 500:
+        raise ValueError("Height or weight values are unrealistic")
+
+    return weight_kg / (height_cm / 100) ** 2
+
+
+def get_bmi_category(bmi: float) -> tuple:
+    """Get BMI category, color, and emoji.
+
+    Args:
+        bmi: The BMI value
+
+    Returns:
+        Tuple of (category_name, color, emoji)
+    """
+    if bmi < 0:
+        raise ValueError("BMI cannot be negative")
+
+    if bmi < 18.5:
+        return ("Underweight", "#FFC300", "⚠️")
+    elif bmi < 24.9:
+        return ("Normal weight", "#2ECC71", "✅")
+    elif bmi < 29.9:
+        return ("Overweight", "#FF5733", "⚠️")
+    else:
+        return ("Obese", "#C70039", "🚨")
+
 
 # Page configuration
 st.set_page_config(
@@ -30,12 +90,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # App header
-st.markdown("""
-    <h1 style='text-align: center; color: #2E4053;'>
-        Body Mass Index (BMI) Calculator 
-        <span style='font-size: 2rem;'>⚕️</span>
-    </h1>
-""", unsafe_allow_html=True)
+st.title("⚕️ Body Mass Index (BMI) Calculator")
+logger.info("BMI Calculator application started")
 
 st.markdown("---")
 
@@ -62,72 +118,103 @@ with col2:
         help="Enter your weight in kilograms"
     )
 
-# Calculate BMI
-bmi = weight / (height / 100) ** 2
+# Calculate BMI with error handling
+try:
+    bmi = calculate_bmi(height, weight)
+    logger.info(f"BMI calculated: {bmi:.2f} for height={height}cm, weight={weight}kg")
+except ValueError as e:
+    st.error(f"❌ {str(e)}")
+    logger.error(f"ValueError during BMI calculation: {e}")
+    st.stop()
+except Exception as e:
+    st.error("❌ An unexpected error occurred while calculating BMI. Please try again.")
+    logger.error(f"Unexpected error during BMI calculation: {e}", exc_info=True)
+    st.stop()
 
 # Create BMI gauge
-def create_gauge(bmi_value):
-    fig = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=bmi_value,
-        domain={'x': [0, 1], 'y': [0, 1]},
-        gauge={
-            'axis': {'range': [None, 40], 'tickwidth': 1},
-            'bar': {'color': "darkblue"},
-            'steps': [
-                {'range': [0, 18.5], 'color': "#FFC300"},    # Underweight
-                {'range': [18.5, 24.9], 'color': "#2ECC71"}, # Normal
-                {'range': [24.9, 29.9], 'color': "#FF5733"}, # Overweight
-                {'range': [29.9, 40], 'color': "#C70039"},   # Obese
-            ],
-            'threshold': {
-                'line': {'color': "red", 'width': 4},
-                'thickness': 0.75,
-                'value': bmi_value
-            }
-        }
-    ))
-    
-    fig.update_layout(
-        height=300,
-        margin=dict(l=10, r=10, t=40, b=10),
-        font={'color': "#2E4053", 'family': "Arial"}
-    )
-    return fig
+def create_gauge(bmi_value: float) -> go.Figure:
+    """Create an interactive gauge chart displaying BMI value.
 
-# Display BMI gauge
-st.plotly_chart(create_gauge(bmi), use_container_width=True)
+    Args:
+        bmi_value: The calculated Body Mass Index value
+
+    Returns:
+        A Plotly Figure object configured as an indicator gauge
+
+    Raises:
+        ValueError: If bmi_value is negative or unreasonably high
+    """
+    if bmi_value < 0 or bmi_value > 100:
+        raise ValueError(f"Invalid BMI value: {bmi_value}")
+
+    try:
+        fig = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=bmi_value,
+            domain={'x': [0, 1], 'y': [0, 1]},
+            gauge={
+                'axis': {'range': [None, 40], 'tickwidth': 1},
+                'bar': {'color': "darkblue"},
+                'steps': [
+                    {'range': [0, 18.5], 'color': "#FFC300"},    # Underweight
+                    {'range': [18.5, 24.9], 'color': "#2ECC71"}, # Normal
+                    {'range': [24.9, 29.9], 'color': "#FF5733"}, # Overweight
+                    {'range': [29.9, 40], 'color': "#C70039"},   # Obese
+                ],
+                'threshold': {
+                    'line': {'color': "red", 'width': 4},
+                    'thickness': 0.75,
+                    'value': bmi_value
+                }
+            }
+        ))
+
+        fig.update_layout(
+            height=300,
+            margin=dict(l=10, r=10, t=40, b=10),
+            font={'color': "#2E4053", 'family': "Arial"}
+        )
+        return fig
+    except Exception as e:
+        logger.error(f"Error creating gauge chart: {e}", exc_info=True)
+        raise
+
+# Display BMI gauge with error handling
+try:
+    st.plotly_chart(create_gauge(bmi), use_container_width=True)
+except ValueError as e:
+    st.error(f"❌ Invalid BMI value: {e}")
+    logger.error(f"ValueError in gauge creation: {e}")
+    st.stop()
+except Exception as e:
+    st.error("❌ Unable to display BMI gauge. Please try again.")
+    logger.error(f"Error displaying gauge: {e}", exc_info=True)
+    st.stop()
 
 # Display weight category with colored boxes
 st.markdown("### Your Results")
 
-if bmi < 18.5:
-    category = "Underweight"
-    color = "#FFC300"
-elif bmi < 24.9:
-    category = "Normal weight"
-    color = "#2ECC71"
-elif bmi < 29.9:
-    category = "Overweight"
-    color = "#FF5733"
-else:
-    category = "Obese"
-    color = "#C70039"
+# Determine category and color using the centralized function
+category, color, emoji = get_bmi_category(bmi)
 
-st.markdown(f"""
-    <div style='
-        background-color: {color};
-        padding: 1rem;
-        border-radius: 0.5rem;
-        color: white;
-        text-align: center;
-        margin: 1rem 0;
-        font-weight: bold;
-    '>
-        Your BMI is: {bmi:.1f}<br>
-        Category: {category}
-    </div>
-""", unsafe_allow_html=True)
+# Use Streamlit native components instead of unsafe HTML
+col1, col2 = st.columns(2)
+with col1:
+    st.metric(label="Your BMI", value=f"{bmi:.1f}")
+with col2:
+    st.metric(label="Category", value=f"{emoji} {category}")
+
+# Display category with appropriate styling using safe Streamlit components
+if category == "Underweight":
+    st.warning(f"⚠️ Your BMI indicates you are **{category}**")
+elif category == "Normal weight":
+    st.success(f"✅ Your BMI indicates you are at a **{category}**")
+elif category == "Overweight":
+    st.warning(f"⚠️ Your BMI indicates you are **{category}**")
+else:
+    st.error(f"🚨 Your BMI indicates you are **{category}**")
+
+logger.info(f"BMI result displayed: {bmi:.2f} - Category: {category}")
 
 # BMI Information expander
 with st.expander("ℹ️ What is BMI?"):
@@ -184,8 +271,5 @@ with st.expander("💡 Health Tips"):
 
 # Footer
 st.markdown("---")
-st.markdown("""
-    <p style='text-align: center; color: #666;'>
-        Remember: BMI is just one measure of health. Always consult with healthcare professionals for medical advice.
-    </p>
-""", unsafe_allow_html=True)
+st.info("ℹ️ Remember: BMI is just one measure of health. Always consult with healthcare professionals for medical advice.")
+logger.info("BMI Calculator session completed")
