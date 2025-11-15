@@ -45,6 +45,7 @@ venv.bak/
 .DS_Store
 Thumbs.db
 *.bak
+*.backup
 
 # Streamlit
 .streamlit/
