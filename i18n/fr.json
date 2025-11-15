@@ -1,0 +1,20 @@
+{
+  "title": "⚕️ Calculateur d'Indice de Masse Corporelle (IMC)",
+  "height_label": "Taille (cm)",
+  "weight_label": "Poids (kg)",
+  "height_help": "Entrez votre taille en centimètres ({min}-{max} cm)",
+  "weight_help": "Entrez votre poids en kilogrammes ({min}-{max} kg)",
+  "results_title": "Vos Résultats",
+  "bmi_label": "Votre IMC",
+  "category_label": "Catégorie",
+  "underweight_msg": "⚠️ Votre IMC indique que vous êtes en **{category}**",
+  "normal_msg": "✅ Votre IMC indique que vous êtes à un **{category}**",
+  "overweight_msg": "⚠️ Votre IMC indique que vous êtes en **{category}**",
+  "obese_msg": "🚨 Votre IMC indique que vous êtes **{category}**",
+  "bmi_info_title": "ℹ️ Qu'est-ce que l'IMC ?",
+  "health_tips_title": "💡 Conseils de Santé",
+  "tips_disclaimer": "⚠️ Ces conseils sont fournis à titre informatif uniquement. Consultez toujours des professionnels de la santé qualifiés pour obtenir des conseils médicaux.",
+  "medical_disclaimer": "ℹ️ N'oubliez pas : l'IMC n'est qu'une mesure de la santé. Consultez toujours des professionnels de la santé pour obtenir des conseils médicaux.",
+  "error_calculation": "❌ Une erreur inattendue s'est produite lors du calcul de l'IMC. Veuillez réessayer.",
+  "error_gauge": "❌ Impossible d'afficher la jauge IMC. Veuillez réessayer."
+}

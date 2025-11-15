@@ -48,7 +48,8 @@ Thumbs.db
 *.backup
 
 # Streamlit
-.streamlit/
+.streamlit/secrets.toml
+.streamlit/credentials.toml
 
 # Testing
 .coverage

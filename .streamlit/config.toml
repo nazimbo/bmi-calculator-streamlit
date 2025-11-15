@@ -1,0 +1,34 @@
+# Streamlit Configuration for Production
+
+[server]
+port = 8501
+address = "0.0.0.0"
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+maxUploadSize = 1  # MB (not needed for this app, but set low for security)
+
+[browser]
+gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
+
+[theme]
+base = "light"
+primaryColor = "#4A90E2"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "sans serif"
+
+[client]
+showErrorDetails = false
+toolbarMode = "minimal"
+
+[runner]
+magicEnabled = true
+fastReruns = true
+
+[logger]
+level = "info"
+messageFormat = "%(asctime)s %(levelname)s: %(message)s"

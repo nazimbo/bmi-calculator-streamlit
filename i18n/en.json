@@ -1,0 +1,20 @@
+{
+  "title": "⚕️ Body Mass Index (BMI) Calculator",
+  "height_label": "Height (cm)",
+  "weight_label": "Weight (kg)",
+  "height_help": "Enter your height in centimeters ({min}-{max} cm)",
+  "weight_help": "Enter your weight in kilograms ({min}-{max} kg)",
+  "results_title": "Your Results",
+  "bmi_label": "Your BMI",
+  "category_label": "Category",
+  "underweight_msg": "⚠️ Your BMI indicates you are **{category}**",
+  "normal_msg": "✅ Your BMI indicates you are at a **{category}**",
+  "overweight_msg": "⚠️ Your BMI indicates you are **{category}**",
+  "obese_msg": "🚨 Your BMI indicates you are **{category}**",
+  "bmi_info_title": "ℹ️ What is BMI?",
+  "health_tips_title": "💡 Health Tips",
+  "tips_disclaimer": "⚠️ These tips are for informational purposes only. Always consult with qualified healthcare professionals for medical advice.",
+  "medical_disclaimer": "ℹ️ Remember: BMI is just one measure of health. Always consult with healthcare professionals for medical advice.",
+  "error_calculation": "❌ An unexpected error occurred while calculating BMI. Please try again.",
+  "error_gauge": "❌ Unable to display BMI gauge. Please try again."
+}

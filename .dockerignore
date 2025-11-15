@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# Logs
+*.log
+logs/
+bmi_calculator.log*
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation (don't need in container)
+*.md
+docs/
+
+# CI/CD
+.github/
+
+# Backups
+*.backup
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit cache
+.streamlit/
+
+# Security files (never include in image)
+*.pem
+*.key
+credentials.json
+secrets.json
+.env
+.env.local
+
+# Development only
+requirements-dev.txt
+pytest.ini
+tests/

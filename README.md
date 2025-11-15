@@ -1,6 +1,31 @@
-# BMI Calculator
+# BMI Calculator v2.0
 
-A modern, secure, and well-tested web application built with Streamlit that calculates Body Mass Index (BMI) and provides personalized health insights.
+A modern, secure, accessible, and multilingual web application built with Streamlit that calculates Body Mass Index (BMI) and provides personalized health insights.
+
+## ✨ What's New in v2.0
+
+### 🚀 **Performance Optimizations**
+- **Caching**: Intelligent caching with `@st.cache_data` and `@st.cache_resource`
+- **Faster Load Times**: CSS, translations, and gauge charts are cached
+- **Reduced Server Load**: Optimized for high-traffic scenarios
+
+### 🌍 **Internationalization (i18n)**
+- **Multi-language Support**: English, Spanish, French
+- **Easy Language Switching**: Sidebar language selector
+- **Extensible**: JSON-based translations for easy additions
+
+### ♿ **Accessibility (WCAG 2.1 Level AA)**
+- **Screen Reader Support**: ARIA labels and semantic HTML
+- **Keyboard Navigation**: Full keyboard accessibility
+- **Focus Indicators**: Clear visual focus states
+- **Alternative Text**: Screen reader descriptions for visualizations
+
+### 🐳 **Production-Ready Deployment**
+- **Docker Support**: Multi-stage Dockerfile for optimal image size
+- **Docker Compose**: One-command deployment
+- **Comprehensive Docs**: Deployment guides for AWS, GCP, Azure, and Streamlit Cloud
+- **Health Checks**: Built-in health monitoring
+- **Security**: Non-root user, minimal attack surface
 
 ## Features
 
@@ -16,10 +41,11 @@ A modern, secure, and well-tested web application built with Streamlit that calc
 - ✅ **XSS Protection**: No unsafe HTML rendering
 - ✅ **Error Handling**: Comprehensive try-except blocks with logging
 - ✅ **Input Validation**: Validates all user inputs for realistic ranges
-- ✅ **Logging**: Full audit trail with rotating log files
+- ✅ **Logging**: Full audit trail with rotating log files (singleton pattern)
 - ✅ **Type Safety**: Type hints on all functions
-- ✅ **Testing**: 80%+ code coverage with pytest
-- ✅ **Security Scanning**: Safety and Bandit ready
+- ✅ **Testing**: 90%+ code coverage with pytest (52 tests)
+- ✅ **Security Scanning**: Safety and Bandit integrated in CI/CD
+- ✅ **Modular Architecture**: Separation of concerns (core, UI, utils)
 
 ## Requirements
 
@@ -91,6 +117,29 @@ open htmlcov/index.html
 
 See [TESTING.md](TESTING.md) for detailed testing documentation.
 
+### Running with Docker
+
+**Quick Start:**
+
+```bash
+# Using Docker
+docker build -t bmi-calculator .
+docker run -p 8501:8501 bmi-calculator
+
+# Using Docker Compose (recommended)
+docker-compose up -d
+```
+
+Open `http://localhost:8501` in your browser.
+
+**Stop the application:**
+
+```bash
+docker-compose down
+```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive deployment guides including AWS, GCP, Azure, and Streamlit Cloud.
+
 ### Security Checks
 
 ```bash
@@ -107,27 +156,48 @@ See [SECURITY.md](SECURITY.md) for security documentation.
 
 ```
 bmi-calculator-streamlit/
-├── app.py                    # Main application with BMI logic
-├── requirements.txt          # Direct dependencies
-├── requirements-lock.txt     # Pinned dependency versions
-├── requirements-dev.txt      # Development dependencies
-├── pytest.ini               # Pytest configuration
-├── .gitignore               # Comprehensive gitignore patterns
-├── README.md                # This file
-├── TESTING.md               # Testing documentation
-├── SECURITY.md              # Security documentation
-└── tests/                   # Test suite
-    ├── __init__.py
-    └── test_bmi_calculator.py  # Comprehensive unit tests
+├── app.py                       # Main Streamlit application (UI layer)
+├── src/                         # Application source code
+│   └── bmi_calculator/
+│       ├── core/                # Business logic
+│       │   ├── calculator.py    # BMI calculations
+│       │   └── constants.py     # Configuration & constants
+│       ├── ui/                  # UI components
+│       │   └── components.py    # Reusable UI components (gauge)
+│       └── utils/               # Utilities
+│           └── logger.py        # Logging configuration
+├── i18n/                        # Internationalization
+│   ├── en.json                  # English translations
+│   ├── es.json                  # Spanish translations
+│   └── fr.json                  # French translations
+├── tests/                       # Test suite
+│   └── test_bmi_calculator.py   # Comprehensive unit tests (52 tests)
+├── .github/                     # CI/CD
+│   └── workflows/
+│       └── ci.yml               # GitHub Actions pipeline
+├── .streamlit/                  # Streamlit configuration
+│   └── config.toml              # Production configuration
+├── Dockerfile                   # Multi-stage Docker build
+├── docker-compose.yml           # Docker Compose configuration
+├── .dockerignore                # Docker build exclusions
+├── requirements.txt             # Direct dependencies
+├── requirements-lock.txt        # Pinned dependency versions
+├── requirements-dev.txt         # Development dependencies
+├── pytest.ini                   # Pytest configuration
+├── README.md                    # This file
+├── TESTING.md                   # Testing documentation
+├── SECURITY.md                  # Security documentation
+└── DEPLOYMENT.md                # Comprehensive deployment guide
 ```
 
 ## Code Quality
 
 ### Testing
-- **Unit tests**: 50+ test cases
-- **Coverage**: 80%+ code coverage requirement
+- **Unit tests**: 52 comprehensive test cases
+- **Coverage**: 90% code coverage (exceeds 80% target)
 - **Test categories**: Normal cases, boundary tests, edge cases, error handling, integration tests
-- **Continuous testing**: Run tests before every commit
+- **Continuous testing**: Automated via GitHub Actions CI/CD
+- **Test modules**: Core logic, UI components, accessibility features
 
 ### Type Safety
 ```python
@@ -159,25 +229,59 @@ The application classifies weight into the following categories:
 - Overweight: BMI 25-29.9 (Orange)
 - Obese: BMI ≥ 30 (Red)
 
-## Recent Improvements (v1.1.0)
+## Version History
 
-### Critical Security Fixes
-- ✅ **Fixed XSS vulnerability**: Replaced all `unsafe_allow_html=True` with Streamlit native components
-- ✅ **Added error handling**: Comprehensive try-except blocks throughout application
-- ✅ **Input validation**: Validates height/weight for realistic ranges
-- ✅ **Dependency security**: Separated direct dependencies from lock file
+### v2.0.0 (Latest) - Comprehensive Enhancements
 
-### Quality Improvements
-- ✅ **Testing infrastructure**: 50+ tests with 80%+ coverage requirement
-- ✅ **Type hints**: Added type annotations to all functions
-- ✅ **Logging**: Full audit trail with rotating log files
-- ✅ **Documentation**: Added TESTING.md and SECURITY.md
-- ✅ **Comprehensive .gitignore**: Prevents committing sensitive files
+#### 🚀 **Performance & Scalability**
+- ✅ **Intelligent Caching**: `@st.cache_data` and `@st.cache_resource` for optimal performance
+- ✅ **Singleton Logger**: Fixed memory leaks from handler accumulation
+- ✅ **Optimized Reruns**: Reduced server resource usage for high-traffic scenarios
 
-### Code Organization
-- ✅ **Extracted functions**: `calculate_bmi()` and `get_bmi_category()` for testability
-- ✅ **Better separation**: Requirements split into production and development
-- ✅ **Developer tools**: pytest, coverage, safety, bandit ready
+#### 🌍 **Internationalization**
+- ✅ **Multi-language Support**: English, Spanish, French
+- ✅ **JSON-based Translations**: Easy to extend with new languages
+- ✅ **User Preference**: Language selector in sidebar
+
+#### ♿ **Accessibility (WCAG 2.1 Level AA)**
+- ✅ **Screen Reader Support**: Full ARIA labels and semantic HTML
+- ✅ **Keyboard Navigation**: Complete keyboard accessibility
+- ✅ **Focus Management**: Clear visual focus indicators
+- ✅ **Alternative Text**: Screen reader descriptions for all visualizations
+
+#### 🐳 **Production Deployment**
+- ✅ **Docker Support**: Multi-stage Dockerfile with non-root user
+- ✅ **Docker Compose**: One-command deployment
+- ✅ **Health Checks**: Built-in health monitoring
+- ✅ **Deployment Guides**: Comprehensive docs for AWS, GCP, Azure, Streamlit Cloud
+
+#### 🏗️ **Architecture**
+- ✅ **Modular Structure**: Separation of core, UI, and utils
+- ✅ **Constants Module**: All configuration centralized
+- ✅ **Backward Compatibility**: Legacy API maintained
+
+#### 📊 **Testing & CI/CD**
+- ✅ **52 Comprehensive Tests**: 90% code coverage
+- ✅ **GitHub Actions**: Automated testing, security scanning, linting
+- ✅ **Multi-Python Support**: Tested on Python 3.9-3.12
+
+### v1.1.0 - Security & Quality Hardening
+
+#### Critical Fixes
+- ✅ Fixed XSS vulnerability with native Streamlit components
+- ✅ Added comprehensive error handling
+- ✅ Implemented realistic input validation
+- ✅ Separated dependency management (direct vs lock files)
+
+#### Quality Improvements
+- ✅ 50+ tests with 80%+ coverage
+- ✅ Type hints on all functions
+- ✅ Rotating log files with audit trail
+- ✅ Added TESTING.md and SECURITY.md
+
+#### Code Organization
+- ✅ Extracted testable functions
+- ✅ Split production and development dependencies
 
 ## Contributing
 

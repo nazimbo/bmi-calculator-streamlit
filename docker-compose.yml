@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  bmi-calculator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bmi-calculator
+    ports:
+      - "8501:8501"
+    environment:
+      # Streamlit configuration
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+      - STREAMLIT_THEME_BASE=light
+    volumes:
+      # Mount logs directory for persistence (optional)
+      - ./logs:/home/appuser/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - bmi-network
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+networks:
+  bmi-network:
+    driver: bridge
